@@ -40,11 +40,15 @@ def get_session(username, password):
         session.cookies.update(cookies)
         print("Loaded cookies. Verifying session...")
         try:
-            response = session.get(f"{BASE_URL}/adverts", timeout=15)
-            response.raise_for_status()
-            if 'logout' in response.text.lower() or 'account' in response.text.lower():
+            response = session.get(f"{BASE_URL}/adverts", timeout=15, allow_redirects=False)
+            if response.status_code in (301, 302, 303, 307, 308):
+                location = response.headers.get('Location', '')
+                print(f"Session invalid - redirected to: {location}")
+            elif response.ok and ('logout' in response.text.lower() or 'account' in response.text.lower()):
                 print("Session is valid.")
                 return session
+            else:
+                print(f"Session check failed - status {response.status_code}")
         except requests.exceptions.RequestException as e:
             print(f"Session validation failed: {e}. Proceeding to re-login.")
     

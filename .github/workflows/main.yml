@@ -21,7 +21,9 @@ jobs:
         id: session-cache
         with:
           path: session_cookies.pkl
-          key: adshare-session-cookies
+          key: adshare-session-cookies-${{ github.run_id }}
+          restore-keys: |
+            adshare-session-cookies-
       - name: Run automation
         run: python -u app.py
         env:
