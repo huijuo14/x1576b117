@@ -17,7 +17,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run automation
-        run: python app.py
+        run: python -u app.py
         env:
+          PYTHONUNBUFFERED: 1
           ADS_USERNAME: ${{ secrets.ADS_USERNAME }}
           ADS_PASSWORD: ${{ secrets.ADS_PASSWORD }}
