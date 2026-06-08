@@ -105,31 +105,16 @@ def get_session(username, password):
     print("All login attempts failed.")
     return None
 
-# For compatibility with the run() function format
-def run(input_dict):
-    # Test the login
-    username = "jiocloud90@gmail.com"
-    password = "@Sd2007123"
-
-    print(f"Testing login with username: {username}")
+if __name__ == "__main__":
+    import sys
+    username = os.environ.get("ADS_USERNAME")
+    password = os.environ.get("ADS_PASSWORD")
+    if not username or not password:
+        print("ERROR: ADS_USERNAME and ADS_PASSWORD environment variables must be set")
+        sys.exit(1)
     session = get_session(username, password)
-
-    result = {"success": False, "session": None}
-    
     if session:
-        print("Login successful! Testing access to account page...")
-        try:
-            response = session.get(f"{BASE_URL}/account", timeout=15)
-            print(f"Account page status: {response.status_code}")
-            if response.status_code == 200:
-                print("Access to account page confirmed!")
-                result["success"] = True
-                result["session"] = "active"
-            else:
-                print("Failed to access account page")
-        except Exception as e:
-            print(f"Error accessing account page: {e}")
+        print("Login successful!")
     else:
-        print("Login failed completely")
-    
-    return result
+        print("Login failed")
+        sys.exit(1)

@@ -1271,8 +1271,12 @@ class AdShareAutomation:
             print(f"{Colors.CYAN}Summary: {Colors.GREEN}{self.total_claims} claims{Colors.CYAN}, {Colors.GREEN}{self.total_credits} credits{Colors.CYAN}, {Colors.YELLOW}{cph:.1f} CPH{Colors.RESET}")
 
 def main():
-    username = "loginallapps@gmail.com"
-    password = "@Sd2007123"
+    username = os.environ.get("ADS_USERNAME")
+    password = os.environ.get("ADS_PASSWORD")
+
+    if not username or not password:
+        print(f"{Colors.RED}ERROR: ADS_USERNAME and ADS_PASSWORD environment variables must be set{Colors.RESET}")
+        sys.exit(1)
 
     try:
         automation = AdShareAutomation(username, password)

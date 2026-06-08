@@ -1,0 +1,23 @@
+name: AdShare Automation
+
+on:
+  schedule:
+    - cron: '0 */8 * * *'
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run automation
+        run: python app.py
+        env:
+          ADS_USERNAME: ${{ secrets.ADS_USERNAME }}
+          ADS_PASSWORD: ${{ secrets.ADS_PASSWORD }}
