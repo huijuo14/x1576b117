@@ -2,7 +2,7 @@ name: AdShare Automation
 
 on:
   schedule:
-    - cron: '0 */8 * * *'
+    - cron: '30 12 * * *'
   workflow_dispatch:
 
 jobs:
