@@ -929,7 +929,7 @@ class AdShareAutomation:
         except requests.exceptions.RequestException as e:
             return False, f"Error claiming: {e}", {}
 
-    def fetch_surf_page(self, min_delay=11, max_delay=13):
+    def fetch_surf_page(self, min_delay=10, max_delay=11):
         """
         Fetch the surf page with a random delay
         """
