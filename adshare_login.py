@@ -43,7 +43,12 @@ def get_session(username, password):
             response = session.get(f"{BASE_URL}/adverts", timeout=15, allow_redirects=False)
             if response.status_code in (301, 302, 303, 307, 308):
                 location = response.headers.get('Location', '')
-                print(f"Session invalid - redirected to: {location}")
+                if '/login' in location:
+                    print(f"Session invalid - redirected to login: {location}")
+                else:
+                    print(f"Session is valid - redirected to: {location}")
+                    save_cookies(session.cookies)
+                    return session
             elif response.ok and ('logout' in response.text.lower() or 'account' in response.text.lower()):
                 print("Session is valid.")
                 return session
@@ -83,8 +88,8 @@ def get_session(username, password):
             print(f"Login response URL: {login_response.url}")
             print(f"Login response status: {login_response.status_code}")
             
-            # Check for successful login by looking for redirect to /offer page
-            if 'offer' in login_response.url and login_response.url != f"{BASE_URL}/login":
+            # Check for successful login — any page other than /login means we're in
+            if login_response.url != f"{BASE_URL}/login":
                 print("Login successful - redirected to offer page!")
                 save_cookies(session.cookies)
                 return session
