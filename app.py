@@ -29,7 +29,7 @@ class Colors:
     RESET = '\033[0m'
 
 # Import the existing login functionality
-from adshare_login import get_session, BASE_URL
+from adshare_login import get_session, BASE_URL, save_cookies
 
 # Define symbol types based on solver logic
 SYMBOL_TYPES = {
@@ -650,6 +650,8 @@ class AdShareAutomation:
         self.total_claims = 0
         self.start_time = datetime.now()  # Track start time
         self.last_target_check_time = datetime.now()  # Track last target check time
+        self.wf_start_time = time.time()  # Track when script started for workflow timeout
+        self.wf_timeout = 345 * 60  # Exit 5 min before GitHub's 350min limit
         self.cph_samples = []  # Store CPH samples for rolling average
         self.credit_events = []  # Store exact credit earning events with timestamps
         self.target_achieved = False  # Track if target has been achieved
@@ -1045,6 +1047,11 @@ class AdShareAutomation:
         """
         Execute one complete automation cycle
         """
+        # Exit cleanly before the 350min workflow timeout so cache Post step saves cookies
+        if time.time() - self.wf_start_time >= self.wf_timeout:
+            save_cookies(self.session.cookies)
+            sys.exit(0)
+
         # Fetch the surf page
         html_content = self.fetch_surf_page()
         if not html_content:
